@@ -42,7 +42,6 @@ Thumbs.db
 .coverage
 htmlcov/
 
-models/*.pth
-data/*.pt
-
+# Trained models / checkpoints
+models/saved_summary_model/
 results/
