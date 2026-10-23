@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import {
   FileTextIcon,
@@ -48,6 +48,8 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
+
+  const textareaRef = useRef(null);
 
   const generateSummary = async () => {
     if (!dialogue.trim()) {
@@ -108,6 +110,7 @@ const Home = () => {
             </div>
           </div>
           <textarea
+            ref={textareaRef}
             value={dialogue}
             onChange={(e) => setDialogue(e.target.value)}
             placeholder={`Hannah: Hey, do you have Betty's number?
@@ -184,7 +187,15 @@ Hannah: I need to contact her about the meeting.`}
             return (
               <div
                 key={example.title}
-                onClick={() => setDialogue(example.dialogue)}
+                onClick={() => {
+                  setDialogue(example.dialogue);
+                  setTimeout(() => {
+                    textareaRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                  }, 0);
+                }}
                 className="flex items-center p-2.5 gap-3 border-2 border-[#D7DEEC] rounded-xl cursor-pointer hover:border-[#4379E9] hover:bg-[#F8FAFF] transition"
               >
                 <MessageCircleMoreIcon className="bg-[#EAF2FF] text-[#3478E8] h-12 w-12 p-2.5 rounded-2xl" />
