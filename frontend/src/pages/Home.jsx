@@ -11,24 +11,34 @@ import {
 
 const examples = [
   {
-    title: "Example 1",
-    description: "Contact information",
+    title: "Meeting",
+    description: "Team discussing project progress",
+    dialogue:
+      "Rahul: How is the project going?\nPriya: We completed the frontend yesterday.\nRahul: Great. What about the backend?\nPriya: We are working on the API integration.",
   },
   {
-    title: "Example 2",
-    description: "Watching a video",
+    title: "Customer Support",
+    description: "Customer discussing an issue",
+    dialogue:
+      "Customer: My order hasn't arrived yet.\nSupport: Let me check the status of your order.\nCustomer: Thank you.\nSupport: Your order will arrive tomorrow.",
   },
   {
-    title: "Example 3",
-    description: "Buying clothes",
+    title: "Interview",
+    description: "Candidate discussing a job",
+    dialogue:
+      "Interviewer: Tell me about yourself.\nCandidate: I am a full stack developer with experience in React and Node.js.\nInterviewer: What projects have you worked on?\nCandidate: I have built several MERN stack applications.",
   },
   {
-    title: "Example 4",
-    description: "Dinner plans",
+    title: "Planning",
+    description: "Team planning an event",
+    dialogue:
+      "Amit: When should we organize the event?\nNeha: How about next Saturday?\nAmit: That works for me.\nNeha: Great, I'll start preparing the schedule.",
   },
   {
-    title: "Example 5",
-    description: "Travel and meeting",
+    title: "Discussion",
+    description: "Friends discussing weekend plans",
+    dialogue:
+      "Arjun: What are you doing this weekend?\nRohan: I am planning to watch a movie.\nArjun: Which movie?\nRohan: The new action movie that just released.",
   },
 ];
 
@@ -64,10 +74,6 @@ const Home = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    generateSummary();
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#F1F6FE] px-6 pb-10 md:px-8 lg:px-10">
@@ -178,7 +184,8 @@ Hannah: I need to contact her about the meeting.`}
             return (
               <div
                 key={example.title}
-                className="flex items-center p-2.5 gap-3 border border-2 border-[#D7DEEC] rounded-xl"
+                onClick={() => setDialogue(example.dialogue)}
+                className="flex items-center p-2.5 gap-3 border-2 border-[#D7DEEC] rounded-xl cursor-pointer hover:border-[#4379E9] hover:bg-[#F8FAFF] transition"
               >
                 <MessageCircleMoreIcon className="bg-[#EAF2FF] text-[#3478E8] h-12 w-12 p-2.5 rounded-2xl" />
                 <div>
