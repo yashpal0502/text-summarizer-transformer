@@ -37,11 +37,18 @@ const Home = () => {
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState("");
+
   const generateSummary = async () => {
-    if (!dialogue.trim()) return;
+    if (!dialogue.trim()) {
+      setError("Please enter a dialogue first.");
+      return;
+    }
 
     try {
       setLoading(true);
+      setError("");
+      setSummary("");
 
       const response = await axios.post("http://127.0.0.1:8000/summarize/", {
         dialogue: dialogue,
@@ -50,6 +57,9 @@ const Home = () => {
       setSummary(response.data.summary);
     } catch (error) {
       console.log("Error generating summary:", error);
+      setError(
+        "Unable to generate summary. Please make sure the backend is running.",
+      );
     } finally {
       setLoading(false);
     }
@@ -103,7 +113,7 @@ Hannah: I need to contact her about the meeting.`}
           <div className="flex gap-3 pt-5">
             <button
               onClick={() => {
-                (setDialogue(""), setSummary(""));
+                (setDialogue(""), setSummary(""), setError(""));
               }}
               className="flex gap-2 w-1/3 border-[2px] border-[#D7DEEC] justify-center items-center py-2 rounded-xl hover:bg-red-100 hover:border-red-200 transition duration-300"
             >
@@ -113,9 +123,12 @@ Hannah: I need to contact her about the meeting.`}
             <button
               onClick={generateSummary}
               disabled={loading}
-              className="flex gap-2 w-2/3 border border-[2px] border-[#4379E9] justify-center items-center bg-[#4379E9] py-2 rounded-xl shadow-md group hover:bg-[#3478E8] active:scale-[0.98] hover:border-[#E5F8EE] transition duration-300"
+              className="flex gap-2 w-2/3 justify-center items-center
+             bg-[#4379E9] py-2 rounded-xl shadow-md
+             disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <SparklesIcon size={22} className="text-white" />
+
               <p className="text-[18px] text-white font-semibold">
                 {loading ? "Generating..." : "Generate Summary"}
               </p>
@@ -123,6 +136,11 @@ Hannah: I need to contact her about the meeting.`}
           </div>
         </div>
         {/* summary */}
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600">
+            {error}
+          </div>
+        )}
         <div className="p-4 bg-white md:w-1/2 flex flex-col gap-3 rounded-xl border border-[#DDE7F5]">
           <div className="flex items-center pb-3">
             <FileTextIcon className="h-13 w-13 p-2 rounded-xl bg-[#E5F8EE] text-[#18B85A]" />
