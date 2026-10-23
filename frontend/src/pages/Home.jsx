@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   FileTextIcon,
   MessageCircleMoreIcon,
@@ -32,6 +33,32 @@ const examples = [
 ];
 
 const Home = () => {
+  const [dialogue, setDialogue] = useState("");
+  const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const generateSummary = async () => {
+    if (!dialogue.trim()) return;
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post("http://127.0.0.1:8000/summarize/", {
+        dialogue: dialogue,
+      });
+
+      setSummary(response.data.summary);
+    } catch (error) {
+      console.log("Error generating summary:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    generateSummary();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F1F6FE] px-6 pb-10 md:px-8 lg:px-10">
       {/* Title section */}
@@ -65,6 +92,8 @@ const Home = () => {
             </div>
           </div>
           <textarea
+            value={dialogue}
+            onChange={(e) => setDialogue(e.target.value)}
             placeholder={`Hannah: Hey, do you have Betty's number?
 Amanda: Let me check...
 Hannah: I need to contact her about the meeting.`}
@@ -72,14 +101,23 @@ Hannah: I need to contact her about the meeting.`}
           />
 
           <div className="flex gap-3 pt-5">
-            <button className="flex gap-2 w-1/3 border-[2px] border-[#D7DEEC] justify-center items-center py-2 rounded-xl hover:bg-red-100 hover:border-red-200 transition duration-300">
+            <button
+              onClick={() => {
+                (setDialogue(""), setSummary(""));
+              }}
+              className="flex gap-2 w-1/3 border-[2px] border-[#D7DEEC] justify-center items-center py-2 rounded-xl hover:bg-red-100 hover:border-red-200 transition duration-300"
+            >
               <TrashIcon size={22} className="text-slate-500" />
               <p className="text-[18px] text-slate-500 font-semibold">Clear</p>
             </button>
-            <button className="flex gap-2 w-2/3 border border-[2px] border-[#4379E9] justify-center items-center bg-[#4379E9] py-2 rounded-xl shadow-md group hover:bg-[#3478E8] active:scale-[0.98] hover:border-[#E5F8EE] transition duration-300">
+            <button
+              onClick={generateSummary}
+              disabled={loading}
+              className="flex gap-2 w-2/3 border border-[2px] border-[#4379E9] justify-center items-center bg-[#4379E9] py-2 rounded-xl shadow-md group hover:bg-[#3478E8] active:scale-[0.98] hover:border-[#E5F8EE] transition duration-300"
+            >
               <SparklesIcon size={22} className="text-white" />
               <p className="text-[18px] text-white font-semibold">
-                Generate Summary
+                {loading ? "Generating..." : "Generate Summary"}
               </p>
             </button>
           </div>
@@ -96,8 +134,7 @@ Hannah: I need to contact her about the meeting.`}
             </div>
           </div>
           <p className="bg-[#F0FAF5] p-4 md:p-6 rounded-xl text-[16px] text-[#182033] leading-7">
-            Hannah needs Betty's number but Amanda doesn't have it. She needs to
-            contact Larry.
+            {summary || "Your generated summary will appear here."}
           </p>
         </div>
       </div>
